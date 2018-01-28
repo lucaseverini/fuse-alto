@@ -8,11 +8,10 @@
 *.perspective
 *.perspectivev3
 *.pbxuser
-xcuserdata
+xcuserdata/
 xcshareddata
 xcdebugger
 .LSOverride
-UserInterfaceState.xcuserstate
 
 # Build products
 DerivedData/
