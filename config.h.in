@@ -1,0 +1,17 @@
+// The configured options and settings for fuse-alto
+#if !defined(_CONFIG_H_)
+#define _CONFIG_H_
+
+#define FUSE_ALTO_VERSION "@fuse-alto_VERSION@"
+#define FUSE_ALTO_VERSION_MAJOR @fuse-alto_VERSION_MAJOR@
+#define FUSE_ALTO_VERSION_MINOR @fuse-alto_VERSION_MINOR@
+#define FUSE_ALTO_VERSION_PATCH @fuse-alto_VERSION_PATCH@
+#define FUSE_ALTO_VER (@fuse-alto_VERSION_MAJOR@ * 65536 + @fuse-alto_VERSION_MINOR@ * 256 + @fuse-alto_VERSION_PATCH@)
+
+#if defined(NDEBUG)
+#define BUILD_TYPE "Release"
+#else
+#define BUILD_TYPE "Debug"
+#endif
+
+#endif // !defined(_CONFIG_H_)

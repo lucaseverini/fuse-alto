@@ -1,0 +1,352 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		81783B7F1EECDC2600B5AF3F /* altofs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81783B7E1EECDC2600B5AF3F /* altofs.cpp */; };
+		81783B811EECDC2F00B5AF3F /* fileinfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81783B801EECDC2F00B5AF3F /* fileinfo.cpp */; };
+		81783B831EECDC3600B5AF3F /* fuse-alto.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 81783B821EECDC3600B5AF3F /* fuse-alto.cpp */; };
+		81783B8B1EECDFC000B5AF3F /* libfuse_ino64.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 81783B881EECDFC000B5AF3F /* libfuse_ino64.dylib */; };
+		81783B8C1EECDFC000B5AF3F /* libfuse.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 81783B891EECDFC000B5AF3F /* libfuse.dylib */; };
+		81783B8D1EECDFC000B5AF3F /* libfuse4x.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 81783B8A1EECDFC000B5AF3F /* libfuse4x.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		81783B721EECDC1600B5AF3F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		81783B741EECDC1600B5AF3F /* fuse-alto */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "fuse-alto"; sourceTree = BUILT_PRODUCTS_DIR; };
+		81783B7E1EECDC2600B5AF3F /* altofs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = altofs.cpp; path = ../altofs.cpp; sourceTree = SOURCE_ROOT; };
+		81783B801EECDC2F00B5AF3F /* fileinfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = fileinfo.cpp; path = ../fileinfo.cpp; sourceTree = SOURCE_ROOT; };
+		81783B821EECDC3600B5AF3F /* fuse-alto.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "fuse-alto.cpp"; path = "../fuse-alto.cpp"; sourceTree = SOURCE_ROOT; };
+		81783B841EECDC4700B5AF3F /* afs_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = afs_types.h; path = ../afs_types.h; sourceTree = SOURCE_ROOT; };
+		81783B851EECDC4700B5AF3F /* altofs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = altofs.h; path = ../altofs.h; sourceTree = SOURCE_ROOT; };
+		81783B861EECDC4700B5AF3F /* fileinfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fileinfo.h; path = ../fileinfo.h; sourceTree = SOURCE_ROOT; };
+		81783B871EECDC7B00B5AF3F /* altofs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = altofs.h; path = ../altofs.h; sourceTree = SOURCE_ROOT; };
+		81783B881EECDFC000B5AF3F /* libfuse_ino64.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfuse_ino64.dylib; path = fuse/lib/libfuse_ino64.dylib; sourceTree = SOURCE_ROOT; };
+		81783B891EECDFC000B5AF3F /* libfuse.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfuse.dylib; path = fuse/lib/libfuse.dylib; sourceTree = SOURCE_ROOT; };
+		81783B8A1EECDFC000B5AF3F /* libfuse4x.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libfuse4x.dylib; path = fuse/lib/libfuse4x.dylib; sourceTree = SOURCE_ROOT; };
+		81783B921EECED2B00B5AF3F /* fuse_common_compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_common_compat.h; path = fuse/include/fuse_common_compat.h; sourceTree = SOURCE_ROOT; };
+		81783B931EECED2B00B5AF3F /* fuse_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_common.h; path = fuse/include/fuse_common.h; sourceTree = SOURCE_ROOT; };
+		81783B941EECED2B00B5AF3F /* fuse_compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_compat.h; path = fuse/include/fuse_compat.h; sourceTree = SOURCE_ROOT; };
+		81783B951EECED2B00B5AF3F /* fuse_darwin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_darwin.h; path = fuse/include/fuse_darwin.h; sourceTree = SOURCE_ROOT; };
+		81783B961EECED2B00B5AF3F /* fuse_kernel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_kernel.h; path = fuse/include/fuse_kernel.h; sourceTree = SOURCE_ROOT; };
+		81783B971EECED2B00B5AF3F /* fuse_lowlevel_compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_lowlevel_compat.h; path = fuse/include/fuse_lowlevel_compat.h; sourceTree = SOURCE_ROOT; };
+		81783B981EECED2B00B5AF3F /* fuse_lowlevel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_lowlevel.h; path = fuse/include/fuse_lowlevel.h; sourceTree = SOURCE_ROOT; };
+		81783B991EECED2B00B5AF3F /* fuse_opt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_opt.h; path = fuse/include/fuse_opt.h; sourceTree = SOURCE_ROOT; };
+		81783B9A1EECED2B00B5AF3F /* fuse_version.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse_version.h; path = fuse/include/fuse_version.h; sourceTree = SOURCE_ROOT; };
+		81783B9B1EECED2B00B5AF3F /* fuse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = fuse.h; path = fuse/include/fuse.h; sourceTree = SOURCE_ROOT; };
+		81783B9D1EEDB96100B5AF3F /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = config.h; path = ../build/config.h; sourceTree = SOURCE_ROOT; };
+		81783B9F1EEDB9B100B5AF3F /* aar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = aar.c; path = ../original/aar.c; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		81783B711EECDC1600B5AF3F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81783B8D1EECDFC000B5AF3F /* libfuse4x.dylib in Frameworks */,
+				81783B8B1EECDFC000B5AF3F /* libfuse_ino64.dylib in Frameworks */,
+				81783B8C1EECDFC000B5AF3F /* libfuse.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		81783B6B1EECDC1600B5AF3F = {
+			isa = PBXGroup;
+			children = (
+				81783B901EECE07700B5AF3F /* Original source */,
+				81783B761EECDC1600B5AF3F /* fuse-alto */,
+				81783B8F1EECE00000B5AF3F /* Libs */,
+				81783B751EECDC1600B5AF3F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		81783B751EECDC1600B5AF3F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				81783B741EECDC1600B5AF3F /* fuse-alto */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		81783B761EECDC1600B5AF3F /* fuse-alto */ = {
+			isa = PBXGroup;
+			children = (
+				81783B8E1EECDFCC00B5AF3F /* fuse */,
+				81783B9D1EEDB96100B5AF3F /* config.h */,
+				81783B871EECDC7B00B5AF3F /* altofs.h */,
+				81783B841EECDC4700B5AF3F /* afs_types.h */,
+				81783B821EECDC3600B5AF3F /* fuse-alto.cpp */,
+				81783B851EECDC4700B5AF3F /* altofs.h */,
+				81783B7E1EECDC2600B5AF3F /* altofs.cpp */,
+				81783B861EECDC4700B5AF3F /* fileinfo.h */,
+				81783B801EECDC2F00B5AF3F /* fileinfo.cpp */,
+			);
+			path = "fuse-alto";
+			sourceTree = "<group>";
+		};
+		81783B8E1EECDFCC00B5AF3F /* fuse */ = {
+			isa = PBXGroup;
+			children = (
+				81783B921EECED2B00B5AF3F /* fuse_common_compat.h */,
+				81783B931EECED2B00B5AF3F /* fuse_common.h */,
+				81783B941EECED2B00B5AF3F /* fuse_compat.h */,
+				81783B951EECED2B00B5AF3F /* fuse_darwin.h */,
+				81783B961EECED2B00B5AF3F /* fuse_kernel.h */,
+				81783B971EECED2B00B5AF3F /* fuse_lowlevel_compat.h */,
+				81783B981EECED2B00B5AF3F /* fuse_lowlevel.h */,
+				81783B991EECED2B00B5AF3F /* fuse_opt.h */,
+				81783B9A1EECED2B00B5AF3F /* fuse_version.h */,
+				81783B9B1EECED2B00B5AF3F /* fuse.h */,
+			);
+			name = fuse;
+			sourceTree = "<group>";
+		};
+		81783B8F1EECE00000B5AF3F /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				81783B881EECDFC000B5AF3F /* libfuse_ino64.dylib */,
+				81783B891EECDFC000B5AF3F /* libfuse.dylib */,
+				81783B8A1EECDFC000B5AF3F /* libfuse4x.dylib */,
+			);
+			name = Libs;
+			path = "fuse-alto";
+			sourceTree = "<group>";
+		};
+		81783B901EECE07700B5AF3F /* Original source */ = {
+			isa = PBXGroup;
+			children = (
+				81783B9F1EEDB9B100B5AF3F /* aar.c */,
+			);
+			name = "Original source";
+			path = "fuse-alto";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		81783B731EECDC1600B5AF3F /* fuse-alto */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 81783B7B1EECDC1600B5AF3F /* Build configuration list for PBXNativeTarget "fuse-alto" */;
+			buildPhases = (
+				81783B701EECDC1600B5AF3F /* Sources */,
+				81783B711EECDC1600B5AF3F /* Frameworks */,
+				81783B721EECDC1600B5AF3F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "fuse-alto";
+			productName = "fuse-alto";
+			productReference = 81783B741EECDC1600B5AF3F /* fuse-alto */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		81783B6C1EECDC1600B5AF3F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Luca Severini";
+				TargetAttributes = {
+					81783B731EECDC1600B5AF3F = {
+						CreatedOnToolsVersion = 8.3.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 81783B6F1EECDC1600B5AF3F /* Build configuration list for PBXProject "fuse-alto" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 81783B6B1EECDC1600B5AF3F;
+			productRefGroup = 81783B751EECDC1600B5AF3F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				81783B731EECDC1600B5AF3F /* fuse-alto */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		81783B701EECDC1600B5AF3F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81783B7F1EECDC2600B5AF3F /* altofs.cpp in Sources */,
+				81783B831EECDC3600B5AF3F /* fuse-alto.cpp in Sources */,
+				81783B811EECDC2F00B5AF3F /* fileinfo.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		81783B791EECDC1600B5AF3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		81783B7A1EECDC1600B5AF3F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		81783B7C1EECDC1600B5AF3F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = fuse/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/fuse/lib",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-D_FILE_OFFSET_BITS=64",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		81783B7D1EECDC1600B5AF3F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				HEADER_SEARCH_PATHS = fuse/include;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/fuse/lib",
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-D_FILE_OFFSET_BITS=64",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		81783B6F1EECDC1600B5AF3F /* Build configuration list for PBXProject "fuse-alto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81783B791EECDC1600B5AF3F /* Debug */,
+				81783B7A1EECDC1600B5AF3F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		81783B7B1EECDC1600B5AF3F /* Build configuration list for PBXNativeTarget "fuse-alto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				81783B7C1EECDC1600B5AF3F /* Debug */,
+				81783B7D1EECDC1600B5AF3F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 81783B6C1EECDC1600B5AF3F /* Project object */;
+}
