@@ -1,7 +1,8 @@
 ## fuse-alto
 
-A working FUSE driver for the Xerox Alto and Alto II file system.
-By Luca Severini (lucaseverini@mac.com).
+FUSE driver for the Xerox Alto and Alto II file system by Luca Severini <lucaseverini@mac.com>
+
+Fork of buggy fuse-alto by Juergen Buchmueller <pullmoll@t-online.de>
 
 The code is based on L. Stewart's `aar.c` dated 1/18/93.
 
