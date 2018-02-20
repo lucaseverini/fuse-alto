@@ -56,7 +56,7 @@ struct fuse_cmd;
  *
  * @param buf the buffer passed to the readdir() operation
  * @param name the file name of the directory entry
- * @param stat file attributes, can be NULL
+ * @param stbuf file attributes, can be NULL
  * @param off offset of the next entry or zero
  * @return 1 if buffer is full, zero otherwise
  */
@@ -1006,9 +1006,9 @@ struct fuse_module {
 	 * This is the filesystem which will be below the newly created
 	 * filesystem in the stack.
 	 *
-	 * @param args the command line arguments
-	 * @param fs NULL terminated filesystem object vector
-	 * @return the new filesystem object
+	 * param args the command line arguments
+	 * param fs NULL terminated filesystem object vector
+	 * return the new filesystem object
 	 */
 	struct fuse_fs *(*factory)(struct fuse_args *args,
 				   struct fuse_fs *fs[]);

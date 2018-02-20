@@ -65,9 +65,9 @@ typedef struct
 {
     word        next_rda;               //!< Next raw disk address
     word        prev_rda;               //!< Previous raw disk address
-    word        unused1;                //!< always 0 ?
-    word        nbytes;                 //!< Number of bytes in page (up to 512)
-    word        filepage;               //!< File relative page (zero based)
+    word        blank;                	//!< always 0
+    word        nbytes;                 //!< Number of bytes in page. First data page can be 0. Last data page can be < 512
+    word        filepage;               //!< File relative page. 0 is leader page, 1 is first data page, and so on
     word        fid_file;               //!< 1 for all used files, ffff for free pages
     word        fid_dir;                //!< 8000 for a directory, 0 for regular, ffff for free
     word        fid_id;                 //!< file identifier, ffff for free

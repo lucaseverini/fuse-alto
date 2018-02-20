@@ -45,6 +45,14 @@ public:
 	void dump_memory(char* data, size_t nwords);
 	void dump_disk_block(page_t page);
 	void dump_leader(afs_leader_t* lp);
+	
+	void print_file_pages(page_t leader_page_vda);
+	int get_page_count(afs_label_t *leaderPageLabel);
+
+	void altotime_to_time(afs_time_t at, time_t* ptime);
+	void time_to_altotime(time_t time, afs_time_t* at);
+	void altotime_to_tm(afs_time_t at, struct tm& tm);
+	std::string altotime_to_str(afs_time_t at);
 
 private:
     void log(int verbosity, const char* format, ...);
@@ -86,11 +94,6 @@ private:
     void write_page(page_t filepage, const char* data, size_t size = PAGESZ);
     void zero_page(page_t filepage);
 
-    void altotime_to_time(afs_time_t at, time_t* ptime);
-    void time_to_altotime(time_t time, afs_time_t* at);
-    void altotime_to_tm(afs_time_t at, struct tm& tm);
-    std::string altotime_to_str(afs_time_t at);
-
     word getword(afs_fa_t *fa);
     int putword(afs_fa_t *fa, word w);
 
@@ -112,7 +115,7 @@ private:
 
     std::string filename_to_string(const char* src);
     void string_to_filename(char *dst, std::string src);
-
+	
     endian_t m_little;                  //!< The little vs. big endian test flag
     int lsb() const { return m_little.lh[0]; }
     int msb() const { return m_little.lh[1]; }

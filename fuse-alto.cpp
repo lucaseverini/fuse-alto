@@ -23,8 +23,8 @@ void convertReadChars(char *buf, size_t size);
 const char* convertWriteChars(const char *buf, size_t size);
 
 // Globals
-static struct fuse_args fuse_args;
 static int verbose = 0;
+static struct fuse_args fuse_args;
 static int help = 0;
 static int debug = 0;
 static int version = 0;
@@ -68,18 +68,33 @@ static struct fuse_opt alto_opts[] =
 	FUSE_OPT_END
 };
 
+void log(int verbosity, const char* format, ...)
+{
+	if (verbosity > verbose)
+	{
+		return;
+	}
+	
+	va_list args;
+	va_start(args, format);
+	vprintf(format, args);
+	va_end(args);
+	
+	fflush(stdout);
+}
+
 static int create_alto(const char* path, mode_t mode, dev_t dev)
 {
-	printf("\ncreate_alto: %s\n", path);
+	log(2, "%s: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	
-	printf("    ctx->pid:   0x%X\n", ctx->pid);
-	printf("    ctx->uid:   0x%X\n", ctx->uid);
-	printf("    ctx->gid:   0x%X\n", ctx->gid);
-	printf("    ctx->umask: 0x%X\n", ctx->umask);
-	printf("    ctx->fuse: 0x%lX\n", (uintptr_t)ctx->fuse);
-	printf("    ctx->private_data: 0x%lX\n", (uintptr_t)ctx->private_data);
+	log(3, "%s: ctx->pid:   0x%X\n", __func__, ctx->pid);
+	log(3, "%s: ctx->uid:   0x%X\n", __func__, ctx->uid);
+	log(3, "%s: ctx->gid:   0x%X\n", __func__, ctx->gid);
+	log(3, "%s: ctx->umask: 0x%X\n", __func__, ctx->umask);
+	log(3, "%s: ctx->fuse: 0x%lX\n", __func__, (uintptr_t)ctx->fuse);
+	log(3, "%s: ctx->private_data: 0x%lX\n", __func__, (uintptr_t)ctx->private_data);
 
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 	int res = 0;
@@ -90,7 +105,7 @@ static int create_alto(const char* path, mode_t mode, dev_t dev)
 		res = afs->unlink_file(path);
 		if (res < 0)
 		{
-			printf("create_alto: %s: unlink_file(\"%s\") returned %d\n", __func__, path, res);
+			log(1, "%s: unlink_file(\"%s\") returned %d\n", __func__, path, res);
 			return res;
 		}
 	}
@@ -98,7 +113,7 @@ static int create_alto(const char* path, mode_t mode, dev_t dev)
 	res = afs->create_file(path);
 	if (res < 0)
 	{
-		printf("create_alto: %s: create_file(\"%s\") returned %d\n", __func__, path, res);
+		log(1, "%s: create_file(\"%s\") returned %d\n", __func__, path, res);
 		return res;
 	}
 	
@@ -106,39 +121,35 @@ static int create_alto(const char* path, mode_t mode, dev_t dev)
 	// Something went really, really wrong
 	if (!info)
 	{
-		printf("create_alto: %s  result: 0\n", path);
+		log(1, "%s: result: 0\n", __func__, path);
 		return -ENOSPC;
 	}
 	
-	printf("create_alto: %s  result: 0\n", path);
+	log(2, "%s: result: 0\n", __func__, path);
 
 	return 0;
 }
 
 static int getattr_alto(const char *path, struct stat *stbuf)
 {
-	printf("\ngetattr_alto: %s\n", path);
+	log(2, "%s: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 
-	printf("    ctx->pid:   0x%X\n", ctx->pid);
-	printf("    ctx->uid:   0x%X\n", ctx->uid);
-	printf("    ctx->gid:   0x%X\n", ctx->gid);
-	printf("    ctx->umask: 0x%X\n", ctx->umask);
-	printf("    ctx->fuse: 0x%lX\n", (uintptr_t)ctx->fuse);
-	printf("    ctx->private_data: 0x%lX\n", (uintptr_t)ctx->private_data);
-	printf("\n");
-	
+	log(3, "%s: ctx->pid:   0x%X\n", __func__, ctx->pid);
+	log(3, "%s: ctx->uid:   0x%X\n", __func__, ctx->uid);
+	log(3, "%s: ctx->gid:   0x%X\n", __func__, ctx->gid);
+	log(3, "%s: ctx->umask: 0x%X\n", __func__, ctx->umask);
+	log(3, "%s: ctx->fuse: 0x%lX\n", __func__, (uintptr_t)ctx->fuse);
+	log(3, "%s: ctx->private_data: 0x%lX\n", __func__, (uintptr_t)ctx->private_data);
+
 	memset(stbuf, 0, sizeof(struct stat));
 
 	afs_fileinfo* info = afs->find_fileinfo(path);
-	
-	printf("getattr_alto: %s  info: %p\n", path, info);
-
 	if (!info)
 	{
-		printf("getattr_alto: %s  result: ENOENT\n", path);
+		log(2, "%s: %s result: ENOENT\n", __func__, path);
 
 		return -ENOENT;
 	}
@@ -159,30 +170,30 @@ static int getattr_alto(const char *path, struct stat *stbuf)
 	info->setStatMode(info->statMode() /*& ~(ctx->umask)*/);
 	
 	memcpy(stbuf, info->st(), sizeof(*stbuf));
-/*
-	printf("    st_dev:     0x%X\n", info->st()->st_dev);
-	printf("    st_ino:     0x%llX\n", info->st()->st_ino);
-	printf("    st_mode:    0x%X\n", info->st()->st_mode);
-	printf("    st_nlink:   0x%X\n", info->st()->st_nlink);
-	printf("    st_uid:     0x%X\n", info->st()->st_uid);
-	printf("    st_gid:     0x%X\n", info->st()->st_gid);
-	printf("    st_rdev:    0x%X\n", info->st()->st_rdev);
-	printf("    st_size:    0x%llX\n", info->st()->st_size);
-	printf("    st_blocks:  0x%llX\n", info->st()->st_blocks);
-	printf("    st_blksize: 0x%X\n", info->st()->st_blksize);
-	printf("    st_flags:   0x%X\n", info->st()->st_flags);
-	printf("    st_gen:     0x%X\n", info->st()->st_gen);
-	printf("    st_lspare:	0x%X\n", info->st()->st_lspare);
-	printf("    st_qspare:  0x%llX 0x%llX\n", info->st()->st_qspare[0], info->st()->st_qspare[1]);
-*/
-	printf("getattr_alto: %s  result: 0\n", path);
+
+	log(3, "    st_dev:     0x%X\n", info->st()->st_dev);
+	log(3, "    st_ino:     0x%llX\n", info->st()->st_ino);
+	log(3, "    st_mode:    0x%X\n", info->st()->st_mode);
+	log(3, "    st_nlink:   0x%X\n", info->st()->st_nlink);
+	log(3, "    st_uid:     0x%X\n", info->st()->st_uid);
+	log(3, "    st_gid:     0x%X\n", info->st()->st_gid);
+	log(3, "    st_rdev:    0x%X\n", info->st()->st_rdev);
+	log(3, "    st_size:    0x%llX\n", info->st()->st_size);
+	log(3, "    st_blocks:  0x%llX\n", info->st()->st_blocks);
+	log(3, "    st_blksize: 0x%X\n", info->st()->st_blksize);
+	log(3, "    st_flags:   0x%X\n", info->st()->st_flags);
+	log(3, "    st_gen:     0x%X\n", info->st()->st_gen);
+	log(3, "    st_lspare:	0x%X\n", info->st()->st_lspare);
+	log(3, "    st_qspare:  0x%llX 0x%llX\n", info->st()->st_qspare[0], info->st()->st_qspare[1]);
+
+	log(2, "%s: path: %s result: 0\n", __func__, path);
 
 	return 0;
 }
 
 static int readdir_alto(const char *path, void *buf, fuse_fill_dir_t filler, off_t offset, struct fuse_file_info *fi)
 {
-	printf("\nreaddir_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
@@ -190,7 +201,7 @@ static int readdir_alto(const char *path, void *buf, fuse_fill_dir_t filler, off
 	afs_fileinfo* info = afs->find_fileinfo("/");
 	if (!info)
 	{
-		printf("readdir_alto: %s  result: ENOENT\n", path);
+		log(2, "%s: path: %s result: ENOENT\n", __func__, path);
 
 		return -ENOENT;
 	}
@@ -205,22 +216,20 @@ static int readdir_alto(const char *path, void *buf, fuse_fill_dir_t filler, off
 	filler(buf, ".", info->st(), 0);
 	filler(buf, "..", NULL, 0);
 	
-	printf("readdir_alto: parent: %p %s %d\n", info, info->name().c_str(), (int)info->size());
+	log(2, "%s: parent: %p %s %d\n", __func__, info, info->name().c_str(), (int)info->size());
 	
 	for (int i = 0; i < info->size(); i++)
 	{
 		afs_fileinfo* child = info->child(i);
 		if (!child)
 		{
-			printf("    NULL CHILD!!!\n");
+			printf(" NULL CHILD!!!\n");
 			continue;
 		}
 		
-		printf("    %s", child->name().c_str());
-		
 		if (child->deleted())
 		{
-			printf(" DELETED!\n");
+			// printf(" DELETED!\n");
 			continue;
 		}
 		
@@ -235,18 +244,16 @@ static int readdir_alto(const char *path, void *buf, fuse_fill_dir_t filler, off
 		{
 			break;
 		}
-		
-		printf("\n");
 	}
 	
-	printf("readdir_alto: %s  result: 0\n", path);
+	log(2, "%s: path: %s result: 0\n", __func__, path);
 
 	return 0;
 }
 
 static int open_alto(const char *path, struct fuse_file_info *fi)
 {
-	printf("\nopen_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
@@ -254,21 +261,21 @@ static int open_alto(const char *path, struct fuse_file_info *fi)
 	afs_fileinfo* info = afs->find_fileinfo(path);
 	if (!info)
 	{
-		printf("open_alto: %s  result: ENOENT\n", path);
+		log(1, "%s: path: %s result: ENOENT\n", __func__, path);
 
 		return -ENOENT;
 	}
 	
 	fi->fh = (uint64_t)info;
 	
-	printf("open_alto: %s  result: 0\n", path);
+	log(2, "%s: path: %s  result: 0\n", __func__, path);
 
 	return 0;
 }
 
 static int read_alto(const char *path, char *buf, size_t size, off_t offset, struct fuse_file_info*)
 {
-	printf("\nread_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
@@ -276,25 +283,25 @@ static int read_alto(const char *path, char *buf, size_t size, off_t offset, str
 	afs_fileinfo* info = afs->find_fileinfo(path);
 	if (!info)
 	{
-		printf("read_alto: %s  result: ENOENT\n", path);
+		log(1, "%s: path: %s result: ENOENT\n", __func__, path);
 
 		return -ENOENT;
 	}
 
-	printf("read_alto: %s  st_size:%lld\n", path, info->st()->st_size);
+	log(2, "%s: path: %s st_size:%lld\n", __func__, path, info->st()->st_size);
 
 	if (offset >= info->st()->st_size)
 	{
-		printf("read_alto: %s  result: 0\n", path);
+		log(1, "%s: path: %s result: 0\n", __func__, path);
 
 		return 0;
 	}
 
-	printf("read_alto: %s  vda:0x%zX  size:%zu buf:%p offset:%lld\n", path, info->leader_page_vda(), size, buf, offset);
+	log(2, "%s: path: %s vda:0x%zX  size:%zu buf:%p offset:%lld\n", __func__, path, info->leader_page_vda(), size, buf, offset);
 
 	size_t done = afs->read_file(info->leader_page_vda(), buf, size, offset);
 	
-	printf("read_alto: %s  vda:0x%zX size:%zu buf:%p offset:%lld  result: %zu\n", path, info->leader_page_vda(), size, buf, offset, done);
+	log(2, "%s: path: %s vda:0x%zX size:%zu buf:%p offset:%lld  result: %zu\n", __func__, path, info->leader_page_vda(), size, buf, offset, done);
 	
 	// printBufferChars(buf, size);
 	// printBuffer(buf, size);
@@ -302,14 +309,14 @@ static int read_alto(const char *path, char *buf, size_t size, off_t offset, str
 	// Convert some chars from Alto to Mac
 	convertReadChars(buf, size);
 	
-	printf("read_alto: %s  result: %zu\n", path, done);
+	log(2, "%s: path: %s result: %zu\n", __func__, path, done);
 
 	return (int)done;
 }
 
 static int write_alto(const char *path, const char *buf, size_t size, off_t offset, struct fuse_file_info*)
 {
-	printf("\nwrite_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 	
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
@@ -317,12 +324,14 @@ static int write_alto(const char *path, const char *buf, size_t size, off_t offs
 	afs_fileinfo* info = afs->find_fileinfo(path);
 	if (!info)
 	{
-		printf("write_alto: %s  result: ENOENT\n", path);
+		log(1, "%s: path: %s result: ENOENT\n", __func__, path);
 
 		return -ENOENT;
 	}
 	
-	printf("write_alto: %s  st_size:%lld\n", path, info->st()->st_size);
+	log(2, "%s: path: %s st_size:%lld\n", __func__, path, info->st()->st_size);
+
+	afs->print_file_pages(info->leader_page_vda());
 
 	// Convert some chars from Mac to Alto
 	const char *convBuff = convertWriteChars(buf, size);
@@ -335,81 +344,88 @@ static int write_alto(const char *path, const char *buf, size_t size, off_t offs
 		free((void*)convBuff);
 	}
 	
-	printf("write_alto: size: %zu  offset: %lld  result: %zu\n", size, offset, done);
+	log(2, "%s: path: size: %zu  offset: %lld  result: %zu\n", __func__, size, offset, done);
 
 	info = afs->find_fileinfo(path);
-	printf("write_alto: %s  st_size:%lld\n", path, info->st()->st_size);
+	log(2, "%s: path: %s st_size:%lld\n", __func__, path, info->st()->st_size);
 
+	afs->print_file_pages(info->leader_page_vda());
+	
 	return (int)done;
 }
 
 static int truncate_alto(const char* path, off_t offset)
 {
-	printf("\ntruncate_alto: %s  offset:%lld\n", path, offset);
+	log(2, "%s: path: %s offset:%lld\n", __func__, path, offset);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 	
 	afs_fileinfo* info = afs->find_fileinfo(path);
-	printf("#### truncate_alto: %s  st_size:%lld\n", path, info->st()->st_size);
+	log(2, "%s: st_size:%lld\n", __func__, info->st()->st_size);
 	
+	afs->print_file_pages(info->leader_page_vda());
+
 	int result = 0;
 	if(offset != info->st()->st_size)
 	{
 		result = afs->truncate_file(path, offset);
 
 		info = afs->find_fileinfo(path);
-		printf("#### truncate_alto: %s  st_size:%lld result: %d\n", path, info->st()->st_size, result);
 	}
-	
+
+	log(2, "%s: st_size:%lld result: %d\n", __func__, info->st()->st_size, result);
+
+	afs->print_file_pages(info->leader_page_vda());
+
 	return result;
 }
 
 static int unlink_alto(const char *path)
 {
-	printf("\nunlink_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 	
 	int result = afs->unlink_file(path);
 	
-	printf("unlink_alto: %s  result: %d\n", path, result);
+	log(2, "%s: path: %s result: %d\n", __func__, path, result);
 
 	return result;
 }
 
 static int rename_alto(const char *path, const char* newname)
 {
-	printf("\nrename_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 
 	int result = afs->rename_file(path, newname);
 	
-	printf("rename_alto: %s  result: %d\n", path, result);
+	log(2, "%s: path: %s result: %d\n", __func__, path, result);
 	
 	return result;
 }
 
 static int utimens_alto(const char* path, const struct timespec tv[2])
 {
-	printf("\nutimens_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
 
 	int result = afs->set_times(path, tv);
 	
-	printf("utimens_alto: %s  result: %d\n", path, result);
+	log(2, "%s: path: %s result: %d\n", __func__, path, result);
 	
 	return result;
 }
 
 static int statfs_alto(const char *path, struct statvfs* vfs)
 {
-	printf("\nstatfs_alto: %s\n", path);
+	log(2, "%s: path: %s\n", __func__, path);
 
 	struct fuse_context* ctx = fuse_get_context();
 	AltoFS* afs = reinterpret_cast<AltoFS*>(ctx->private_data);
@@ -417,14 +433,14 @@ static int statfs_alto(const char *path, struct statvfs* vfs)
 	// We have but a single root directory
 	if (strcmp(path, "/"))
 	{
-		printf("statfs_alto: %s  result: EINVAL\n", path);
+		log(2, "%s: path: %s  result: EINVAL\n", __func__, path);
 
 		return -EINVAL;
 	}
 	
 	int result = afs->statvfs(vfs);
 
-	printf("statfs_alto: %s  result: %d\n", path, result);
+	log(2, "%s: path: %s  result: %d\n", __func__, path, result);
 
 	return result;
 }
@@ -469,21 +485,18 @@ void* init_alto(fuse_conn_info* info)
 	afs = new AltoFS(filenames, verbose);
 	
 #if DEBUG
-	if (verbose > 2)
-	{
-		printf("%s: fuse_conn_info* = %p\n", __func__, (void*)info);
-		printf("%s:   proto_major             : %u\n", __func__, info->proto_major);
-		printf("%s:   proto_minor             : %u\n", __func__, info->proto_minor);
-		printf("%s:   async_read              : %u\n", __func__, info->async_read);
-		printf("%s:   max_write               : %u\n", __func__, info->max_write);
-		printf("%s:   max_readahead           : %u\n", __func__, info->max_readahead);
-		printf("%s:   capable                 : %#x\n", __func__, info->capable);
-		printf("%s:   capable.flags           : %s\n", __func__, fuse_cap(info->capable));
-		printf("%s:   want                    : %#x\n", __func__, info->want);
-		printf("%s:   want.flags              : %s\n", __func__, fuse_cap(info->want));
-		printf("%s:   max_background          : %u\n", __func__, info->max_background);
-		printf("%s:   congestion_threshold    : %u\n", __func__, info->congestion_threshold);
-	}
+	log(3, "%s: fuse_conn_info* = %p\n", __func__, (void*)info);
+	log(3, "%s:   proto_major             : %u\n", __func__, info->proto_major);
+	log(3, "%s:   proto_minor             : %u\n", __func__, info->proto_minor);
+	log(3, "%s:   async_read              : %u\n", __func__, info->async_read);
+	log(3, "%s:   max_write               : %u\n", __func__, info->max_write);
+	log(3, "%s:   max_readahead           : %u\n", __func__, info->max_readahead);
+	log(3, "%s:   capable                 : %#x\n", __func__, info->capable);
+	log(3, "%s:   capable.flags           : %s\n", __func__, fuse_cap(info->capable));
+	log(3, "%s:   want                    : %#x\n", __func__, info->want);
+	log(3, "%s:   want.flags              : %s\n", __func__, fuse_cap(info->want));
+	log(3, "%s:   max_background          : %u\n", __func__, info->max_background);
+	log(3, "%s:   congestion_threshold    : %u\n", __func__, info->congestion_threshold);
 #endif
 	return afs;
 }
@@ -493,7 +506,11 @@ static int usage(const char* program)
 	const char* prog = strrchr(program, '/');
 	prog = prog ? prog + 1 : program;
 	
-	fprintf(stderr, "fuse-alto Version %s by Luca Severini (lucaseverini@mac.com)\n", FUSE_ALTO_VERSION);
+	char dateStr[32];
+	sprintf(dateStr, "%s %s", __DATE__, __TIME__);
+	
+	fprintf(stderr, "fuse-alto Version %s (%s) by Luca Severini <lucaseverini@mac.com>\n", FUSE_ALTO_VERSION, dateStr);
+	fprintf(stderr, "Copyright (c) 2016, Juergen Buchmueller <pullmoll@t-online.de>\n\n");
 	fprintf(stderr, "usage: %s <mountpoint> [options] <disk image file(s)>\n", prog);
 	fprintf(stderr, "Where [options] can be one or more of\n");
 	fprintf(stderr, "    -h|--help          print this help\n");
@@ -599,20 +616,14 @@ static void shutdown_fuse()
 	
 	if (fuse)
 	{
-		if (verbose)
-		{
-			printf("%s: removing signal handlers\n", __func__);
-		}
+		log(2, "%s: removing signal handlers\n", __func__);
 		
 		fuse_remove_signal_handlers(fuse_get_session(fuse));
 	}
 	
 	if (mountpoint && chan)
 	{
-		if (verbose)
-		{
-			printf("%s: unmounting %s\n", __func__, mountpoint);
-		}
+		log(2, "%s: unmounting %s\n", __func__, mountpoint);
 		
 		fuse_unmount(mountpoint, chan);
 		mountpoint = 0;
@@ -621,10 +632,7 @@ static void shutdown_fuse()
 	
 	if (fuse)
 	{
-		if (verbose)
-		{
-			printf("%s: shutting down fuse\n", __func__);
-		}
+		log(2, "%s: shutting down fuse\n", __func__);
 		
 		fuse_destroy(fuse);
 		fuse = 0;
@@ -632,10 +640,7 @@ static void shutdown_fuse()
 	
 	if (fuse_ops)
 	{
-		if (verbose)
-		{
-			printf("%s: releasing fuse ops\n", __func__);
-		}
+		log(2, "%s: releasing fuse ops\n", __func__);
 		
 		free(fuse_ops);
 		fuse_ops = 0;
@@ -643,10 +648,7 @@ static void shutdown_fuse()
 	
 	if(fuse_args.allocated != 0)
 	{
-		if (verbose)
-		{
-			printf("%s: releasing fuse args\n", __func__);
-		}
+		log(2, "%s: releasing fuse args\n", __func__);
 		
 		fuse_opt_free_args(&fuse_args);
 	}
@@ -654,10 +656,6 @@ static void shutdown_fuse()
 
 int main(int argc, char *argv[])
 {
-#if DEBUG
-	printf("%s pid:%d\n", basename(argv[0]), getpid());
-#endif
-
 	if (argc == 1)
 	{
 		usage(argv[0]);
@@ -678,9 +676,7 @@ int main(int argc, char *argv[])
 	
 	if (verbose)
 	{
-#if RELEASE
 		printf("%s pid:%d\n", basename(argv[0]), getpid());
-#endif
 	}
 
 	if (debug)
@@ -699,7 +695,11 @@ int main(int argc, char *argv[])
 	{
 		if (debug == 0 && help == 0)
 		{
-			printf("fuse-alto Version %s by Luca Severini (lucaseverini@mac.com)\n", FUSE_ALTO_VERSION);
+			char dateStr[32];
+			sprintf(dateStr, "%s %s", __DATE__, __TIME__);
+
+			printf("fuse-alto Version %s (%s) by Luca Severini <lucaseverini@mac.com>\n", FUSE_ALTO_VERSION, dateStr);
+			printf("Copyright (c) 2016, Juergen Buchmueller <pullmoll@t-online.de>\n");
 
 			// Current fuse version always prints the version
 			fuse_opt_add_arg(&fuse_args, "--version");
@@ -727,6 +727,11 @@ int main(int argc, char *argv[])
 	{
 		perror("fuse_parse_cmdline()");
 		exit(1);
+	}
+	
+	if (verbose > 0)
+	{
+		printf("verbosity: %d\n", verbose);
 	}
 	
 	assert(sizeof(afs_kdh_t) == 32);
@@ -814,7 +819,7 @@ void printBuffer(const char *buf, size_t size)
 		return;
 	}
 	
-	printf("#### %d chars in buffer:\n", (int)size);
+	// printf("#### %d chars in buffer:\n", (int)size);
 	
 	char prevChar = '\0';
 	for (int idx = 0; idx < size; idx++)
@@ -854,7 +859,7 @@ void printBuffer(const char *buf, size_t size)
 
 void printBufferChars(const char *buf, size_t size)
 {
-	printf("\n#### %d chars in buffer:\n", (int)size);
+	// printf("\n#### %d chars in buffer:\n", (int)size);
 
 	if (size == 0)
 	{
