@@ -513,7 +513,7 @@ static int usage(const char* program)
 	fprintf(stderr, "Copyright (c) 2016, Juergen Buchmueller <pullmoll@t-online.de>\n\n");
 	fprintf(stderr, "usage: %s <mountpoint> [options] <disk image file(s)>\n", prog);
 	fprintf(stderr, "Where [options] can be one or more of\n");
-	fprintf(stderr, "    -h|--help          print this help\n");
+	fprintf(stderr, "    -h|--help          print this help and the usage\n");
 	fprintf(stderr, "    -f|--foreground    run fuse-alto in the foreground\n");
 	fprintf(stderr, "    -s|--single        run fuse-alto single threaded\n");
 	fprintf(stderr, "    -v|--verbose       set verbose mode (can be repeated)\n");
