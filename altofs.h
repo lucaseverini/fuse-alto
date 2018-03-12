@@ -18,7 +18,7 @@ class AltoFS
 public:
 
     AltoFS();
-    AltoFS(const char* filename, int verbosity = 0);
+    AltoFS(const char* filename, int verbosity = 0, bool check = false, bool rebuild = false);
     ~AltoFS();
 
     int verbosity() const;
@@ -132,6 +132,8 @@ private:
     std::string m_dp1name;              //!< the name of the second disk image, if any
     int m_verbose;                      //!< verbosity value
     afs_fileinfo* m_root_dir;           //!< The root directory file info node
+	bool m_check;                      	//!< check flag
+	int m_rebuild;                      //!< rebuild flag
 };
 
 #endif // !defined(_ALTOFS_H_)

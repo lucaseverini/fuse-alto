@@ -36,7 +36,7 @@ AltoFS::AltoFS() :
     m_little.e = 1;
 }
 
-AltoFS::AltoFS(const char* filename, int verbosity) :
+AltoFS::AltoFS(const char* filename, int verbosity, bool check, bool rebuild) :
     m_little(),
     m_kdh(),
     m_bit_count(0),
@@ -50,7 +50,9 @@ AltoFS::AltoFS(const char* filename, int verbosity) :
     m_dp0name(),
     m_dp1name(),
     m_verbose(verbosity),
-    m_root_dir(0)
+    m_root_dir(0),
+ 	m_check(check),
+ 	m_rebuild(rebuild)
 {
     /**
      * The union's little.e is initialized to 1
@@ -61,7 +63,8 @@ AltoFS::AltoFS(const char* filename, int verbosity) :
 	
     read_disk_file(filename);
 	
-    // verify_headers();
+    // verify_headers(); // Doesn't seem to be really necessary
+	
     if (!validate_disk_descriptor())
 	{
         fix_disk_descriptor();
@@ -133,7 +136,7 @@ void AltoFS::setVerbosity(int verbosity)
  */
 afs_leader_t* AltoFS::page_leader(page_t vda)
 {
-    afs_leader_t* lp = (afs_leader_t *)&m_disk[vda].data[0];
+    afs_leader_t* lp = (afs_leader_t*)&m_disk[vda].data[0];
 
 #if defined(DEBUG)
     if (m_verbose > 3 && lp->proplength > 0)
@@ -212,7 +215,7 @@ int AltoFS::read_disk_file(std::string name)
         m_dp1name = std::string(name, pos + 1);
         m_doubledisk = true;
 		
-		printf("Mounting double disk:\n");
+		printf("Mounting double disk images:\n");
 		printf("1) %s\n", m_dp0name.c_str());
 		printf("2) %s\n", m_dp1name.c_str());
     }
@@ -222,7 +225,7 @@ int AltoFS::read_disk_file(std::string name)
         m_dp1name.clear();
         m_doubledisk = false;
 		
-		printf("Mounting single disk: %s\n", m_dp0name.c_str());
+		printf("Mounting single disk image: %s\n", m_dp0name.c_str());
     }
 
     m_disk.resize(2 * NPAGES);
@@ -249,6 +252,16 @@ bool AltoFS::read_single_disk(std::string name, afs_page_t* diskp)
     bool ok = true;
     bool use_pclose = false;
 
+	if(m_check)
+	{
+// TODO: Implement disk validity check here
+	}
+
+	if(m_rebuild)
+	{
+// TODO: Implement disk rebuild here
+	}
+	
     log(2, "%s: Reading disk image '%s'\n", __func__, name.c_str());
     // We conclude the disk image is compressed if the name ends with .Z
     int pos = (int)name.find(".Z");
@@ -2148,9 +2161,11 @@ int AltoFS::validate_disk_descriptor()
     my_assert_or_die(ddlp != -1, "%s: Can't find DiskDescriptor\n", __func__);
 
     lp = page_leader(ddlp);
-    (void)lp; // yet unused
-    l = page_label(ddlp);
+    // Check lp validity
+	my_assert_or_die(lp != 0, "%s: Can't find page leader\n", __func__);
+	my_assert_or_die(strlen(lp->filename) != 0, "%s: Invalid name in page leader\n", __func__);
 
+    l = page_label(ddlp);
     fa.vda = rda_to_vda(l->next_rda);
     memcpy(&m_kdh, &m_disk[fa.vda].data[0], sizeof(m_kdh));
 #pragma message "Is disk_bt_size a fixed value ?"

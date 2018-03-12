@@ -37,6 +37,8 @@ static struct fuse_chan* chan = NULL;
 static struct fuse* fuse = NULL;
 static struct fuse_operations* fuse_ops = NULL;
 static AltoFS* afs = 0;
+static bool check = false;
+static bool rebuild = false;
 
 enum
 {
@@ -45,7 +47,9 @@ enum
 	KEY_FOREGROUND,
 	KEY_SINGLE_THREADED,
 	KEY_VERBOSE,
-	KEY_VERSION
+	KEY_VERSION,
+	KEY_CHECK,
+	KEY_REBUILD
 };
 
 /**
@@ -65,6 +69,10 @@ static struct fuse_opt alto_opts[] =
 	FUSE_OPT_KEY("--verbose",    KEY_VERBOSE),
 	FUSE_OPT_KEY("-V",           KEY_VERSION),
 	FUSE_OPT_KEY("--version",    KEY_VERSION),
+	FUSE_OPT_KEY("--c",    		 KEY_CHECK),
+	FUSE_OPT_KEY("--check",    	 KEY_CHECK),
+	FUSE_OPT_KEY("--r",    		 KEY_REBUILD),
+	FUSE_OPT_KEY("--rebuild",    KEY_REBUILD),
 	FUSE_OPT_END
 };
 
@@ -482,7 +490,7 @@ void* init_alto(fuse_conn_info* info)
 {
 	(void)info;
 	
-	afs = new AltoFS(filenames, verbose);
+	afs = new AltoFS(filenames, verbose, check, rebuild);
 	
 #if DEBUG
 	log(3, "%s: fuse_conn_info* = %p\n", __func__, (void*)info);
@@ -514,10 +522,12 @@ static int usage(const char* program)
 	fprintf(stderr, "usage: %s <mountpoint> [options] <disk image file> [<second disk image file>]\n", prog);
 	fprintf(stderr, "Where [options] can be one or more of\n");
 	fprintf(stderr, "    -h|--help          prints this help and all possible options, then quits\n");
+	fprintf(stderr, "    -d|--debug         prints debug messages\n");
 	fprintf(stderr, "    -f|--foreground    runs fuse-alto in the foreground\n");
 	fprintf(stderr, "    -s|--single        runs fuse-alto single threaded\n");
 	fprintf(stderr, "    -v|--verbose       sets verbose mode (can be repeated)\n");
-	fprintf(stderr, "    -d|--debug         prints debug messages\n");
+	fprintf(stderr, "    -c|--check         (not implemented yet) checks the validity of disk structure\n");
+	fprintf(stderr, "    -r|--rebuild       (not implemented yet) rebuilds the disk structure like the scavenger programs does\n");
 	fprintf(stderr, "    -V|--version       prints version of fuse and fuse-alto programs, then quits\n");
 	return 0;
 }
@@ -602,7 +612,15 @@ static int fuse_opt_proc(void* data, const char* arg, int key, struct fuse_args*
 		case KEY_VERSION:
 			version = 1;
 			return 0;
-			
+
+		case KEY_CHECK:
+			check = true;
+			return 0;
+
+		case KEY_REBUILD:
+			rebuild = true;
+			return 0;
+
 		default:
 			fprintf(stderr, "internal error\n");
 			exit(2);
