@@ -511,12 +511,14 @@ static int usage(const char* program)
 	
 	fprintf(stderr, "fuse-alto Version %s (%s) by Luca Severini <lucaseverini@mac.com>\n", FUSE_ALTO_VERSION, dateStr);
 	fprintf(stderr, "Copyright (c) 2016, Juergen Buchmueller <pullmoll@t-online.de>\n\n");
-	fprintf(stderr, "usage: %s <mountpoint> [options] <disk image file(s)>\n", prog);
+	fprintf(stderr, "usage: %s <mountpoint> [options] <disk image file> [<second disk image file>]\n", prog);
 	fprintf(stderr, "Where [options] can be one or more of\n");
-	fprintf(stderr, "    -h|--help          print this help and the usage\n");
-	fprintf(stderr, "    -f|--foreground    run fuse-alto in the foreground\n");
-	fprintf(stderr, "    -s|--single        run fuse-alto single threaded\n");
-	fprintf(stderr, "    -v|--verbose       set verbose mode (can be repeated)\n");
+	fprintf(stderr, "    -h|--help          prints this help and all possible options, then quits\n");
+	fprintf(stderr, "    -f|--foreground    runs fuse-alto in the foreground\n");
+	fprintf(stderr, "    -s|--single        runs fuse-alto single threaded\n");
+	fprintf(stderr, "    -v|--verbose       sets verbose mode (can be repeated)\n");
+	fprintf(stderr, "    -d|--debug         prints debug messages\n");
+	fprintf(stderr, "    -V|--version       prints version of fuse and fuse-alto programs, then quits\n");
 	return 0;
 }
 
@@ -552,7 +554,7 @@ static int fuse_opt_proc(void* data, const char* arg, int key, struct fuse_args*
 			break;
 			
 		case FUSE_OPT_KEY_NONOPT:
-			if (0 == nonopt_seen++)
+			if (nonopt_seen++ == 0)
 			{
 				return 1;
 			}
@@ -768,14 +770,14 @@ int main(int argc, char *argv[])
 	}
 	
 	chan = fuse_mount(mountpoint, &fuse_args);
-	if (0 == chan)
+	if (chan == 0)
 	{
 		perror("fuse_mount()");
 		exit(1);
 	}
 	
 	fuse = fuse_new(chan, &fuse_args, fuse_ops, sizeof(*fuse_ops), NULL);
-	if (0 == fuse)
+	if (fuse == 0)
 	{
 		perror("fuse_new()");
 		exit(2);

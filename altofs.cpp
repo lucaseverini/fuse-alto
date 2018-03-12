@@ -211,16 +211,22 @@ int AltoFS::read_disk_file(std::string name)
         m_dp0name = std::string(name, 0, pos);
         m_dp1name = std::string(name, pos + 1);
         m_doubledisk = true;
+		
+		printf("Mounting double disk:\n");
+		printf("1) %s\n", m_dp0name.c_str());
+		printf("2) %s\n", m_dp1name.c_str());
     }
 	else
 	{
         m_dp0name = name;
         m_dp1name.clear();
         m_doubledisk = false;
+		
+		printf("Mounting single disk: %s\n", m_dp0name.c_str());
     }
 
-    m_disk.resize(2*NPAGES);
-    my_assert_or_die(m_disk.data() != NULL, "%s: disk resize(%d) failed", __func__, 2*NPAGES);
+    m_disk.resize(2 * NPAGES);
+    my_assert_or_die(m_disk.data() != NULL, "%s: disk resize(%d) failed", __func__, 2 * NPAGES);
 
     int ok = read_single_disk(m_dp0name, &m_disk[0]);
     if (ok && m_doubledisk)
@@ -243,7 +249,7 @@ bool AltoFS::read_single_disk(std::string name, afs_page_t* diskp)
     bool ok = true;
     bool use_pclose = false;
 
-    log(1, "%s: Reading disk image '%s'\n", __func__, name.c_str());
+    log(2, "%s: Reading disk image '%s'\n", __func__, name.c_str());
     // We conclude the disk image is compressed if the name ends with .Z
     int pos = (int)name.find(".Z");
     if (pos > 0)
@@ -513,7 +519,7 @@ page_t AltoFS::alloc_page(page_t page)
 	log(2, "%s: prevPage=%-5ld\n", __func__, page);
 
 	// Won't find a free page anyway
-    if (0 == m_kdh.free_pages)
+    if (m_kdh.free_pages == 0)
 	{
         log(1, "%s: KDH free pages is 0 - no free page found\n", __func__);
         return 0;
@@ -695,18 +701,23 @@ int AltoFS::read_sysdir()
         std::string fn = filename_to_string(pdv->filename);
 
         // Verify filename with leader page
-        afs_leader_t* lp = page_leader(pdv->fileptr.leader_vda);
-        byte fnlen2 = lp->filename[lsb()];
-        log(4,"%s:* directory entry    : @%u **************\n", __func__, (word)((char *)pdv - m_sysdir.data()));
-        log(4,"%s:  type               : %u (%s)\n", __func__, type, 4 == type ? "allocated" : "deleted");
-        log(4,"%s:  length             : %u\n", __func__, length);
-        log(4,"%s:  fileptr.fid_dir    : %#x\n", __func__, pdv->fileptr.fid_dir);
-        log(4,"%s:  fileptr.serialno   : %#x\n", __func__, pdv->fileptr.serialno);
-        log(4,"%s:  fileptr.version    : %#x\n", __func__, pdv->fileptr.version);
-        log(4,"%s:  fileptr.blank      : %#x\n", __func__, pdv->fileptr.blank);
-        log(4,"%s:  fileptr.leader_vda : %u\n", __func__, pdv->fileptr.leader_vda);
-        log(4,"%s:  filename length    : %u (%u)\n", __func__, fnlen, fnlen2);
-        log(4,"%s:  filename           : %s\n", __func__, fn.c_str());
+		afs_leader_t* lp = page_leader(pdv->fileptr.leader_vda);
+		
+		int idx = lsb();
+		// printf("lsb: %d\n", idx);
+		// printf("lp->filename: %p\n", lp->filename); // May crash here... Add pointer validation to aovid crashes to be used with scavenger
+		
+        byte fnlen2 = lp->filename[idx];
+        log(4, "%s:* directory entry    : @%u **************\n", __func__, (word)((char *)pdv - m_sysdir.data()));
+        log(4, "%s:  type               : %u (%s)\n", __func__, type, 4 == type ? "allocated" : "deleted");
+        log(4, "%s:  length             : %u\n", __func__, length);
+        log(4, "%s:  fileptr.fid_dir    : %#x\n", __func__, pdv->fileptr.fid_dir);
+        log(4, "%s:  fileptr.serialno   : %#x\n", __func__, pdv->fileptr.serialno);
+        log(4, "%s:  fileptr.version    : %#x\n", __func__, pdv->fileptr.version);
+        log(4, "%s:  fileptr.blank      : %#x\n", __func__, pdv->fileptr.blank);
+        log(4, "%s:  fileptr.leader_vda : %u\n", __func__, pdv->fileptr.leader_vda);
+        log(4, "%s:  filename length    : %u (%u)\n", __func__, fnlen, fnlen2);
+        log(4, "%s:  filename           : %s\n", __func__, fn.c_str());
 		
 		afs_dv dv(*pdv);
 		
@@ -900,7 +911,7 @@ int AltoFS::remove_sysdir_entry(std::string name)
 int AltoFS::rename_sysdir_entry(std::string name, std::string newname)
 {
     // Never allow renaming SysDir or DiskDescriptor
-    if (0 == name.compare("SysDir") || 0 == name.compare("DiskDescriptor"))
+    if (name.compare("SysDir") == 0 || name.compare("DiskDescriptor") == 0)
         return -EPERM;
     if (name[0] == '/')
         name.erase(0, 1);
@@ -955,7 +966,7 @@ int AltoFS::unlink_file(std::string path)
     std::string fn = filename_to_string(lp->filename);
 
     // Never allow deleting SysDir or DiskDescriptor
-    if (0 == fn.compare("SysDir") || 0 == fn.compare("DiskDescriptor"))
+    if (fn.compare("SysDir") == 0 || fn.compare("DiskDescriptor") == 0)
 	{
         return -EPERM;
 	}
@@ -1224,7 +1235,7 @@ int AltoFS::truncate_file(std::string path, off_t offset)
 		{
             // allocate a new page
             page = alloc_page(page);
-            if (0 == page)
+            if (page == 0)
 			{
                 // No free page found
                 info->setStatSize(static_cast<size_t>(offs));
@@ -1500,7 +1511,7 @@ int AltoFS::make_fileinfo_file(afs_fileinfo* parent, int leader_page_vda, bool u
         // A directory (SysDir) is a file which can't be modified
         st.st_mode = S_IFREG | 0400;
     }
-	else if (0 == fn.compare("DiskDescriptor"))
+	else if (fn.compare("DiskDescriptor") == 0)
 	{
         // Don't allow DiskDescriptor to be written to
         st.st_mode = S_IFREG | 0400;
@@ -2015,7 +2026,6 @@ void AltoFS::setPageBitmapBit(page_t page, int val)
 	}
 	
     int offs = (int)(page / 16);
-    // int bit = page % 16;
     int bit = 15 - (page % 16);
 	
     if (val != ((m_bit_table[offs] >> bit) & 1))
@@ -2048,16 +2058,7 @@ void AltoFS::free_page(page_t page, word id)
 	log(2, "%s:    fid_file: 0x%X \n", __func__, l->fid_file);
 	log(2, "%s:    fid_dir:  0x%X \n", __func__, l->fid_dir);
 	log(2, "%s:    fid_id:   0x%X \n", __func__, l->fid_id);
-/*
-	word        next_rda;               //!< Next raw disk address
-	word        prev_rda;               //!< Previous raw disk address
-	word        unused1;                //!< always 0 ?
-	word        nbytes;                 //!< Number of bytes in page (up to 512)
-	word        filepage;               //!< File relative page (zero based)
-	word        fid_file;               //!< 1 for all used files, ffff for free pages
-	word        fid_dir;                //!< 8000 for a directory, 0 for regular, ffff for free
-	word        fid_id;                 //!< file identifier, ffff for free
-*/
+
 	my_assert_or_die(l->nbytes == 0 || (l->nbytes > 0 && l->fid_id == id),
 					 "%s: Fatal: the label id 0x%04x does not match the leader id 0x%04x\n",
 					 __func__, l->fid_id, id);
@@ -2581,13 +2582,4 @@ void AltoFS::print_file_pages(page_t leader_page_vda)
 	
 	log(1, "-------------------------\n");
 }
-
-word        next_rda;               //!< Next raw disk address
-word        prev_rda;               //!< Previous raw disk address
-word        unused1;                //!< always 0 ?
-word        nbytes;                 //!< Number of bytes in page (up to 512)
-word        filepage;               //!< File relative page (zero based)
-word        fid_file;               //!< 1 for all used files, ffff for free pages
-word        fid_dir;                //!< 8000 for a directory, 0 for regular, ffff for free
-word        fid_id;                 //!< file identifier, ffff for free
 
